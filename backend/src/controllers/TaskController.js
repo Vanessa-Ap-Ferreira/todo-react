@@ -37,10 +37,11 @@ class TaskController {
     }
 
     atualizarTarefa(request,response){
-        const id = request.params
-        const {descricao} = request.body
+        const id = request.params.id
+        console.log(request.body.tarefa)
+        const {tarefa} = request.body
 
-        database.where({id:id}).update({descricao:descricao}).table("tasks").then(data=>{
+        database.where({id:id}).update({tarefa:tarefa}).table("tasks").then(data=>{
             response.json({message:"Tarefa atualizada com sucesso"})
         }).catch(error=>{
             response.json(error)
@@ -48,7 +49,7 @@ class TaskController {
     }
 
     removerTarefa(request,response){
-        const id = request.params
+        const id = request.params.id
 
         database.where({id:id}).del().table("tasks").then(data=>{
             response.json({message: "Tarefa removida com sucesso"})
