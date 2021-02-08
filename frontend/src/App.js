@@ -24,12 +24,29 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetch('http://localhost:4000/tarefas').then(response => response.json()).then(listaTarefas => {
-      const novaLista = listaTarefas.map(tarefa => ({ text: tarefa.tarefa, key: tarefa.id }))
-      this.setState({
-        items: novaLista
-      })
+
+    fetch('http://localhost:4000/tarefas', {
+      headers: {
+        "x-access-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjEyNjM1NDE5LCJleHAiOjE2MTI2MzU3MTl9.WCGMCyowQEn5IHSmPWFY1NrhdcFmt39qLJX5gtvaPq0"
+      }
     })
+      .then(async response => {
+
+        if (response.ok) {
+          return response.json()
+        } else {
+          console.error(await response.json())
+          return []
+        }
+
+      })
+      .then(listaTarefas => {
+        const novaLista = listaTarefas.map(tarefa => ({ text: tarefa.tarefa, key: tarefa.id }))
+
+        this.setState({
+          items: novaLista
+        })
+      })
   }
 
   handleInput(e) {
@@ -80,7 +97,7 @@ class App extends React.Component {
 
 
   setUpdate(text, key) {
-    fetch(`http://localhost:4000/atualizar/tarefa/${key}` , {
+    fetch(`http://localhost:4000/atualizar/tarefa/${key}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tarefa: text, descricao: '', responsavel: '' })
